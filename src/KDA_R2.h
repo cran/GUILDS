@@ -4,10 +4,9 @@
 #include <fstream>
 #include <stdlib.h> //qsort
 #include <limits.h>
-//#include <string.h>
-//#include <time.h>
 #include <math.h>
-//#include <malloc.h>
+#include <vector>
+
 using namespace std;
 using namespace Rcpp;
 
@@ -25,16 +24,12 @@ static  int intcompare2(const void *i, const void *j)
 }
 
 
-long double *K;                                   // K[A]=K(D,A)in Etienne's paper
-long double J, SPP;
-int *Abund;
-int numspecies;
-
-
-
-void calcLogKDA() {           //after Jerome Chave
+void calcLogKDA2(std::vector<long double> K, long double J, long double SPP, int numspecies, std::vector<int> Abund)
+{           //after Jerome Chave
 
 	int i,n,im,s;
+   
+    if(Abund.size() < 1) return;
    
     //ofstream out(nomfo);    
     //out  <<"S\t J\t Theta\t Std_Theta\t I\t Std_I\t m\t Std_m\t loglike_min\t Theta_Ewens\t loglike_Ewens\t Theta2\t Std_Theta2\t I2\t Std_I2\t m2\t Std_m2\t loglike_min2\n";
@@ -42,8 +37,9 @@ void calcLogKDA() {           //after Jerome Chave
     
     J=0;
     SPP = numspecies;
-    for(s=0;s<SPP;s++)
+    for(s=0;s<SPP;s++) {
         J += Abund[s];
+	}
      //cerr << "Number of individuals: "<< J << endl;
    
 
@@ -220,7 +216,7 @@ void calcLogKDA() {           //after Jerome Chave
 
 
 // [[Rcpp::export]]
-NumericVector calcKDA(NumericVector A)
+NumericVector calcKDA2(NumericVector A)
 {
     //convert abundances from A to Species
 	numspecies = A.size();

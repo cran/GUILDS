@@ -1,4 +1,4 @@
-logLik <- function(theta_x,theta_y,alpha_x,alpha_y,J,Sx,Sy,Nx,Ny,KDA_X,KDA_Y,prefactor1,prefactor2,verbose=TRUE) {
+logLikguilds <- function(theta_x,theta_y,alpha_x,alpha_y,J,Sx,Sy,Nx,Ny,KDA_X,KDA_Y,prefactor1,prefactor2,verbose=TRUE) {
  thrs <- 10;
  
  f <- function(x) {
@@ -81,7 +81,7 @@ maxLikelihood.Guilds <- function(initVals,model,method,SADX,SADY,verbose=TRUE) {
   	if(alpha_x<0||alpha_y<0||theta_x<1||theta_y<1) return(-Inf)
   	if(alpha_x>(1-(1e-8))||alpha_y>(1-(1e-8))) return(-Inf)
   
-  	y = logLik(theta_x,theta_y,alpha_x,alpha_y,J,Sx,Sy,Nx,Ny,KDA_X,KDA_Y,prefactor1,prefactor2,verbose);
+  	y = logLikguilds(theta_x,theta_y,alpha_x,alpha_y,J,Sx,Sy,Nx,Ny,KDA_X,KDA_Y,prefactor1,prefactor2,verbose);
   	return(y);
   }
 
@@ -134,7 +134,7 @@ logLikelihood.Guilds <- function(parameters,model,SADX,SADY,verbose=TRUE) {
   
 
 
-  LL <- logLik(theta_x,theta_y,alpha_x,alpha_y,J,Sx,Sy,Nx,Ny,KDA_X,KDA_Y,prefactor1,prefactor2,verbose=);
+  LL <- logLikguilds(theta_x,theta_y,alpha_x,alpha_y,J,Sx,Sy,Nx,Ny,KDA_X,KDA_Y,prefactor1,prefactor2,verbose=);
   
   if(verbose==TRUE) cat("Likelihood is ",LL,"\n");
   

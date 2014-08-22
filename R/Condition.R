@@ -121,7 +121,7 @@ conditional.LogLik <- function(v,model,J,Sx,Sy,Nx,Ny,KDA_X,KDA_Y,prefactor1,pref
   if(alpha_x>(1-(1e-8))||alpha_y>(1-(1e-8))) return(-Inf)
   
   
-  LL <- logLik(theta_x,theta_y,alpha_x,alpha_y,J,Sx,Sy,Nx,Ny,KDA_X,KDA_Y,prefactor1,prefactor2,verbose);
+  LL <- logLikguilds(theta_x,theta_y,alpha_x,alpha_y,J,Sx,Sy,Nx,Ny,KDA_X,KDA_Y,prefactor1,prefactor2,verbose);
   cond_LL <- calcConditional(v,model,Nx,Ny);
   out <- LL - cond_LL;
   return(out);

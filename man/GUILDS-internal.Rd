@@ -3,7 +3,7 @@
 \alias{simplex}
 \alias{rho}
 \alias{PolyaEggenberger}
-\alias{logLik}
+\alias{logLikguilds}
 \alias{localComm}
 \alias{getPX}
 \alias{evaluateLogLik}
