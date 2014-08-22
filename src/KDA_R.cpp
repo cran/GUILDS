@@ -4,64 +4,40 @@
 #include <fstream>
 #include <stdlib.h> //qsort
 #include <limits.h>
-//#include <string.h>
-//#include <time.h>
 #include <math.h>
-//#include <malloc.h>
+#include <vector>
+
 using namespace std;
 using namespace Rcpp;
 
-// Function for the quick sort routine
-static  int intcompare2(const void *i, const void *j)
-{
-  int *u,*v;
-  u = (int *) i;
-  v = (int *) j;
-  if (*u > *v)
-    return (1);
-  if (*u < *v)
-    return (-1);
-  return (0);
-}
 
 
-long double *K;                                   // K[A]=K(D,A)in Etienne's paper
-long double J, SPP;
-int *Abund;
-int numspecies;
-
-
-
-void calcLogKDA() {           //after Jerome Chave
-
-	int i,n,im,s;
+void calcLogKDA(std::vector<long double>& K, long double J, int numspecies, std::vector<int> Abund)
+{           //after Jerome Chave
    
-    //ofstream out(nomfo);    
-    //out  <<"S\t J\t Theta\t Std_Theta\t I\t Std_I\t m\t Std_m\t loglike_min\t Theta_Ewens\t loglike_Ewens\t Theta2\t Std_Theta2\t I2\t Std_I2\t m2\t Std_m2\t loglike_min2\n";
-    qsort(Abund,numspecies,sizeof(int),intcompare2);
-    
+    if(Abund.size() < 1) return;
+   
+    sort(Abund.begin(), Abund.end());
+
     J=0;
-    SPP = numspecies;
-    for(s=0;s<SPP;s++)
+    long double SPP = numspecies;
+    for(int s=0;s<SPP;s++) {
         J += Abund[s];
-     //cerr << "Number of individuals: "<< J << endl;
-   
+	}   
 
     int MaxA = 0;
-    MaxA=Abund[(int)SPP-1];
-
-    //cerr <<" "<<endl;
-   // cerr << "Maximal abundance: " << MaxA << endl;
+	MaxA = Abund[ Abund.size() - 1]; //MaxA = Abund[(int)SPP-1];
+	
 
    
     // abundance distribution
-    int *Phi = new int[MaxA+1];
-    for(s=0;s<=MaxA;s++) Phi[s]=0;
-    for(s=0;s<SPP;s++) Phi[Abund[s]]++;
+    std::vector<int> Phi(MaxA+1,0); //int *Phi = new int[MaxA+1]; for(s=0;s<=MaxA;s++) Phi[s]=0;
+    
+   for(int s=0;s<SPP;s++) Phi[Abund[s]]++;
 
     // Number of distinct abundances
     int NDA=0;
-    for(s=0;s<=MaxA;s++) if(Phi[s] > 0) {NDA++;}
+    for(int s=0;s<=MaxA;s++) if(Phi[s] > 0) {NDA++;}
     
     
     //cerr << "Start computing Stirling numbers ...\n";
@@ -73,59 +49,71 @@ void calcLogKDA() {           //after Jerome Chave
     // The recurrence relation on T(n,m) is 
     // T(n,m)= T(n-1,m) + T(n-1,m-1)*(m-1)/(n-1)
    
-    int *f = new int[NDA];
-    int *g = new int[NDA];
-    i=0;
-    for(s=0;s<NDA;s++) {f[s]=0;g[s]=0;}
-    for(n=0;n<=MaxA;n++) if(Phi[n] > 0) {             
+    
+	std::vector<int> f(NDA,0); //int *f = new int[NDA];
+	std::vector<int> g(NDA,0); //int *g = new int[NDA];
+    int i = 0;    
+    //for(s=0;s<NDA;s++) {f[s]=0;g[s]=0;}
+    for(int n=0;n<=MaxA;n++) {
+	  if(Phi[n] > 0) {             
         f[i] = Phi[n];                                  
         g[i] = n;                                        
         i++;
         }
-    long double **T= new long double*[NDA];          // T(n,m) just for the n which are useful
-    T[0] = new long double[g[0]+1];
-    T[0][0]=0;T[0][1]=1;
-    if (g[0]!=1){
-        long double *lS2 = new long double[g[0]+1]; 
+	}
+    //long double **T= new long double*[NDA];          // T(n,m) just for the n which are useful
+    //T[0] = new long double[g[0]+1];
+ 
+    
+	std::vector< long double > fill;
+	std::vector< std::vector< long double > > T(NDA,fill);
+	
+	std::vector<long double> T0(g[0]+1);
+	T[0] = T0;
+	T[0][0]=0;T[0][1]=1;
+	
+	if(g[0]!=1)
+	{
+		std::vector<long double> lS2(g[0]+1); //        long double *lS2 = new long double[g[0]+1]; 
         lS2[0]=0;lS2[1]=1;
-        for (n=2;n<=g[0];n++) {
-            long double *lS1 = new long double[n+1];                
-            for(im=0;im<=n-1;im++) {
+        for (int n=2;n<=g[0];n++) {
+            std::vector<long double> lS1(n+1); //long double *lS1 = new long double[n+1];                
+            for(int im=0;im<=n-1;im++) {
                 lS1[im] = lS2[im];
             }
             lS1[n]=0;
-            for(im=2;im<=n;im++) {
+            for(int im=2;im<=n;im++) {
                 lS2[im] = lS1[im]+lS1[im-1]*(im-1)/(n-1); 
             }
-            delete[] lS1;            
         }
-        for(im=2;im<=g[0];im++) {
+        for(int im=2;im<=g[0];im++) {
             T[0][im]=lS2[im];
         }
-        delete[] lS2;
     }
+	
+	
     for (int in=1;in<i;in++){
-        T[in]= new long double[g[in]+1];
-        T[in][0]=0;T[in][1]=1;
-        long double *lS2 = new long double[g[in]+1];         
-        for(im=0;im<=g[in-1];im++) {
+        std::vector<long double> Tin(g[in]+1); //T[in]= new long double[g[in]+1];
+		T[in] = Tin;
+		T[in][0]=0;T[in][1]=1;
+		
+        std::vector<long double> lS2(g[in]+1); //long double *lS2 = new long double[g[in]+1];         
+        for(int im=0;im<=g[in-1];im++) {
                 lS2[im] = T[in-1][im];
             }
-        for (n=g[in-1]+1;n<=g[in];n++) {
-            long double *lS1 = new long double[n+1];                
-            for(im=0;im<=n-1;im++) {
+        for (int n=g[in-1]+1;n<=g[in];n++) {
+            std::vector<long double> lS1(n+1); //long double *lS1 = new long double[n+1];                
+            for(int im=0;im<=n-1;im++) {
                 lS1[im] = lS2[im];
             }
             lS1[n]=0;
-            for(im=2;im<=n;im++) {
+            for(int im=2;im<=n;im++) {
                 lS2[im] = lS1[im]+lS1[im-1]*(im-1)/(n-1); 
             }
-            delete[] lS1;            
         }
-        for(im=2;im<=g[in];im++) {
+        for(int im=2;im<=g[in];im++) {
             T[in][im]=lS2[im];
         }
-        delete[] lS2;
     }
     // After this stage we have stored in T[i][m] T(g[i],m)
     // with T(n,m) = S(n,m)*S(m,1)/S(n,1) for i>0
@@ -134,47 +122,45 @@ void calcLogKDA() {           //after Jerome Chave
     // SECOND STAGE: compute the K(D,A)
     // I follow Etienne's route. Compute the product of polynomials 
     // of length J
-    int j,nn,mm;
-    K = new long double[int(J)+1];
-    long double *poly2 = new long double[int(J)+1];
-    for(i=0;i<=J;i++){
-        K[i] = poly2[i] = 0.0;
-    }
+    K.clear();
+    K.resize(J+2,0.0); //K = new long double[int(J)+1];
+		
+    std::vector<long double> poly2(J+1,0.0);//long double *poly2 = new long double[int(J)+1];
     K[0]=1;
     int degree = 0;
     int spe=0;
-    for(i=0;i<NDA;i++) // loop over number of distinct abundances
-        for(j=0;j<f[i];j++){ // loop over abundances per class             
-            for(nn=0;nn<=degree;nn++)
-                for(mm=1;mm<=g[i];mm++){
+    for(int i=0;i<NDA;i++) // loop over number of distinct abundances
+        for(int j=0;j<f[i];j++){ // loop over abundances per class             
+            for(int nn=0;nn<=degree;nn++)
+                for(int mm=1;mm<=g[i];mm++){
                     if (K[nn]>0){                   
                        poly2[nn+mm] += T[i][mm]*K[nn];
                     }
                     
                 }              
             degree += g[i];
-            for(nn=0;nn<=degree;nn++){            
+            for(int nn=0;nn<=degree;nn++){            
                 K[nn] = (poly2[nn]/powl(10,(4500.0/SPP)));
                 poly2[nn] = 0.0;
             }
             spe++;
         }
     
-    for(i=int(SPP);i<=J;i++){
+    for(int i=int(SPP);i<=J;i++){
         K[i] = logl(K[i]);                                    // now K[A]=ln(K(D,A)/10^4500) in Etienne's paper
     }
-    for(i=0;i<NDA;i++) delete[] T[i];
-	delete[] T;
-    delete[] poly2;
-    delete[] f;
-    delete[] g;
+    //for(i=0;i<NDA;i++) delete[] T[i];
+	//delete[] T;
+    //delete[] poly2;
+    //delete[] f;
+    //delete[] g;
 
 // search of "infinite" values in K[A]
-    int borneinf=int(SPP-1);
-    int bornesup=int(J+1);
+    int borneinf=(SPP-1);
+    int bornesup=(J+1);
     long double maxlog=11333.2;
     int infinity=0;
-    for(i=int(SPP);i<=J;i++){
+    for(int i= SPP;i<=J;i++){
         if ((K[i]>maxlog)||(K[i]<-maxlog)) {
             infinity=1;
             break;
@@ -182,7 +168,7 @@ void calcLogKDA() {           //after Jerome Chave
         borneinf++;
     }  //after that, borneinf=indice next to infinity but before
     for(int i=0;i<=J-SPP;i++){
-        if ((K[(int)J-i]>maxlog)||(K[(int)J-i]<-maxlog)) {
+        if ((K[J-i]>maxlog)||(K[(int)J-i]<-maxlog)) {
             infinity=1;
             break;
         }
@@ -195,8 +181,17 @@ void calcLogKDA() {           //after Jerome Chave
 
   //fitting of the infinite values of K[A] by a polynom of degree 3
     //computing of the derivatives at the critic points
+    if(borneinf > K.size()) return;
+    if(bornesup > (K.size()-1)) return;
     long double Kprimeinf = K[borneinf]-K[borneinf-1];
-    long double Kprimesup = K[bornesup+1]-K[bornesup];
+
+     
+    long double Kprimesup1 = -50.0;  //out of range check
+    if((bornesup+1) < K.size()) Kprimesup1 = K[bornesup+1];
+    long double Kprimesup2 = 0.0;   //out of range check
+    if(bornesup > -0.1) Kprimesup2 = K[bornesup];
+
+    long double Kprimesup = Kprimesup1-Kprimesup2; //K[bornesup+1]-K[bornesup];
     // definition of the parameters of the fitted polynom aX^3+bX^2+cX+d
     long double a,b,c,d;
     //inversion of the linear system of equations (with the Gauss method)
@@ -223,24 +218,26 @@ void calcLogKDA() {           //after Jerome Chave
 NumericVector calcKDA(NumericVector A)
 {
     //convert abundances from A to Species
-	numspecies = A.size();
-	Abund = new int[numspecies];                          
-
+	int numspecies = A.size();
+	std::vector<int> Abund(numspecies); //Abund = new int[numspecies];       
+	                   
 	int J = 0;
 	for(int s = 0; s < numspecies; ++s) {
+	   if(s > Abund.size()) break;
 	   Abund[s] = A[s];
 	   J += Abund[s];
 	}
 	//call calcLogKDA
-	calcLogKDA();
+	std::vector<long double> K;
+	calcLogKDA(K,J,numspecies,Abund);
 	//return K
 	   
-	int sizeofK =  J + 1; //I hope!
+	//int sizeofK =  J + 1; //I hope!
+	int sizeofK = K.size();	
 	NumericVector out(sizeofK);
 	for(int i = 0; i < sizeofK; ++i) {
 	   out[i] = K[i] + 4500.0 * logl(10);
 	}
-
 
     return out;	
 }

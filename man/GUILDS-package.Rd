@@ -6,7 +6,10 @@
 \description{ The GUILDS package contains a number of sampling formula's being the Etienne Sampling Formula (Etienne 2005), the GUILDS sampling formula (Janzen 2014) and the GUILDS sampling formula conditioned on guild Size (Janzen 2014). Furthermore it contains functions to generate data given the guilds model, with or without conditioning on guild size. C++ Code to obtain Sterling numbers of the first kind was adopted from the Tetame program by Jabot et al. (2008).   
 \cr\cr
 Updates \cr\cr
-Version 1.1: removed malloc header from KDA code and fixed memory issues in KDA code\cr
+Version 1.2: fixed memory leak issues by adding extra vector access checks \cr
+Version 1.2: fixed memory leak issues by introducing vectors in KDA code\cr
+Version 1.2: renamed logLik to avoid shadowing of the function logLik in the package stats\cr
+Version 1.1: removed malloc header from KDA code \cr
 }
 \details{
 \tabular{ll}{
