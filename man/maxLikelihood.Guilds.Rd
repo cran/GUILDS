@@ -59,7 +59,7 @@ Thijs Janzen
 }
 
 \examples{
-initParams <- c(20,0.1);
+initParams <- c(20,0.1); #initial parameters for the D0 model c(theta,alpha)
 maxLikelihood.Guilds(initParams,model="D0", method="simplex", 
 		     SADX = 1:20, SADY = 1:20, verbose = TRUE)
 }

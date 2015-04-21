@@ -30,6 +30,6 @@
 }
 
 \examples{
-	A <- c(1,1,1,3,5,8)
+	A <- c(1,1,1,3,5,8); #Artificial abundance dataset
 	LL <- logLikelihood.ESF(theta = 7,m = 0.1,Abund = A)
 }
