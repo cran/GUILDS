@@ -2,25 +2,25 @@
 \title{Internal Guilds functions}
 \alias{simplex}
 \alias{rho}
-\alias{PolyaEggenberger}
+\alias{polyaeggenberger}
 \alias{logLikguilds}
 \alias{localComm}
-\alias{getPX}
+\alias{getpx}
 \alias{evaluateLogLik}
-\alias{ESF_local}
+\alias{esf_local}
 \alias{conditional.LogLik}
-\alias{calcSumKDA2}
-\alias{calcConditional}
-\alias{evaluateCondLik}
+\alias{calc_sum_kda}
+\alias{calc_conditional}
+\alias{evaluate_cond_lik}
 \alias{calcKDA}
 \alias{pm_sad}
 \alias{pm_sadaux}
-\alias{drawLocalCond}
-\alias{drawLocal}
-\alias{prestonSort}
+\alias{draw_local_cond}
+\alias{draw_local}
+\alias{sort_aux}
 \alias{generate.ZSM}
-
-
+\alias{octave_index}
+\alias{preston_sort}
 \description{Internal Guilds functions}
 \details{These are not to be called by the user}
 \keyword{internal}

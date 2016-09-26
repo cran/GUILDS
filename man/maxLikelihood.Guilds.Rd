@@ -8,11 +8,11 @@
  This function computes the maximum likelihood estimates of the parameters of the guilds model.
 }
 \usage{
-maxLikelihood.Guilds(initVals, model, method, SADX, SADY, verbose = TRUE)
+maxLikelihood.Guilds(init_vals, model, method, sadx, sady, verbose = TRUE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{initVals}{\code{initVals} corresponds to a vector of parameter values in which to start the Maxmimum Likelihood algorithm, depending on the provided model: \cr
+  \item{init_vals}{\code{init_vals} corresponds to a vector of parameter values in which to start the Maxmimum Likelihood algorithm, depending on the provided model: \cr
 		- model: "D0" \code{parameters} = c(theta, alpha) \cr
 		- model: "D1" \code{parameters} = c(theta, alpha X, alpha Y) \cr
 	}
@@ -25,11 +25,12 @@ maxLikelihood.Guilds(initVals, model, method, SADX, SADY, verbose = TRUE)
  \item{method}{Optimization of the Likelihood can be done using two different methods: \cr
 			- "simplex": this method makes use of the "Nelder Mead" optimization method \cr
 			- "subplex": makes use of the subplex method from the package "subplex" \cr
+						- Note 2016-09-23: Because the subplex method is generating errors, for the time being, the subplex method has been disabled.\cr
 		Please note that we have explicitly not used the "optim" method, since this method tends to provide less reliable outcomes.
     }
 
-  \item{SADX}{ The Species Abundance Distribution of guild X}
-  \item{SADY}{ The Species Abundance Distribution of guild Y} 
+  \item{sadx}{ The Species Abundance Distribution of guild X}
+  \item{sady}{ The Species Abundance Distribution of guild Y} 
   \item{verbose}{TRUE/FALSE flag, indicates whether intermediate output is shown on screen}
 }
 
@@ -60,6 +61,6 @@ Thijs Janzen
 
 \examples{
 initParams <- c(20,0.1); #initial parameters for the D0 model c(theta,alpha)
-maxLikelihood.Guilds(initParams,model="D0", method="simplex", 
-		     SADX = 1:20, SADY = 1:20, verbose = TRUE)
+maxLikelihood.Guilds(initParams, model = "D0", method = "simplex", 
+		     sadx = 1:20, sady = 1:20, verbose = TRUE)
 }

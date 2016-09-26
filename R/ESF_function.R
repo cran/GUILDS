@@ -1,68 +1,85 @@
-
-
-logLikelihood.ESF <- function(theta,m,Abund) {
-  if(theta < 1 || m > (1-.Machine$double.eps)) {
-     return(-1e120);
+logLikelihood.ESF <- function(theta, m, abund) {
+  if (theta < 1 ||
+     m > (1 - .Machine$double.eps) ||
+     m <= 0) {
+     return(-Inf)
   }
 
-  J = sum(Abund);
-  S = length(Abund);
-  I = m * (J-1) / (1 - m);
+  J <- sum(abund)
+  S <- length(abund)
+  I <- m * (J-1) / (1 - m)
 
-  KDA = calcKDA(Abund);  #confirmed in PARI
+  kda <- calcKDA(abund)  #confirmed in PARI
 
-  sumKDA = calcSumKDA2(S,J,I,theta,KDA);  
- 
-  x <- c(table(Abund));
-  freq_x <- c();
-  for(i in 1:length(x)) freq_x[i] <- x[[i]];
-  prefactor1 = -( sum(log(Abund)) + sum(lgamma(1+freq_x)) );
-  
-  factor1 <- lgamma(J+1) + prefactor1  #J!/[prod(n1)prod(Sx!)]  #confirmed in PARI
-  
-  factor2 = S*log(theta)   -  (lgamma(I + J) - lgamma(I));
-  
-  LogLikelihood <- factor1 + factor2 + sumKDA;
-  return(LogLikelihood);
+  sumkda <- calc_sum_kda(S, J, I, theta, kda)
+
+  x <- c(table(abund))
+  freq_x <- c()
+  for (i in seq_along(x)) freq_x[i] <- x[[i]]
+  prefactor1 <- -1 * ( sum(log(abund)) + sum(lgamma(1 + freq_x)))
+
+  #J!/[prod(n1)prod(Sx!)]  #confirmed in PARI
+  factor1 <- lgamma(J+1) + prefactor1
+
+  factor2 <- S*log(theta)   -  (lgamma(I + J) - lgamma(I))
+
+  ll <- factor1 + factor2 + sumkda
+  return(ll)
 }
 
-ESF_local <- function(v,Abund,prefactor,KDA) {
-  theta = v[1];
-  m = v[2];
-  if(theta < 1 || m <= 0 || m > (1-.Machine$double.eps)) {
-    return(-1e120);
+esf_local <- function(v, abund, prefactor, kda) {
+  theta <- v[1]
+  m <- v[2]
+
+  if (theta < 1 ||
+     m <= 0 ||
+     m > (1 - .Machine$double.eps)) {
+    return(-Inf)
   }
- 
-  J = sum(Abund);
-  S = length(Abund);
-  I = m * (J-1) / (1 - m);
 
-  sumKDA = calcSumKDA2(S,J,I,theta,KDA);  
- 
-  factor2 = S*log(theta)   -  (lgamma(I + J) - lgamma(I));
-  
-  LogLikelihood <- prefactor + factor2 + sumKDA;
-  return(LogLikelihood);
+  J <- sum(abund)
+  S <- length(abund)
+  I <- m * (J - 1) / (1 - m)
+
+  sumkda <- calc_sum_kda(S, J, I, theta, kda)
+
+  factor2 <- S * log(theta)   -  (lgamma(I + J) - lgamma(I))
+
+  ll <- prefactor + factor2 + sumkda
+  return(ll)
 }
 
+maxLikelihood.ESF <- function(init_vals, abund, verbose = TRUE) {
+  if (init_vals[1] < 1) {
+     stop("maxLikelihood.ESF: ",
+          "initial theta can not be below one")
+   }
+  if (init_vals[2] < 0) {
+    stop("maxLikelihood.ESF: ",
+         "initial m can not be below zero")
+  }
+  if (init_vals[2] > 1) {
+    stop("maxLikelihood.ESF: ",
+         "initial m can not be above 1 (did you mean to enter I?)")
+  }
+  if (length(abund) < 2) {
+    stop("maxLikelihood.ESF: ",
+         "Need more than 1 species in the dataset")
+  }
 
+  kda <- calcKDA(abund)  #confirmed in PARI
 
-maxLikelihood.ESF <- function(initVals,Abund,verbose=TRUE) {
+  J <- sum(abund)
+  x <- c( table(abund))
+  freq_x <- c()
+  for (i in seq_along(x)) freq_x[i] <- x[[i]]
+  prefactor <- lgamma(J+1) - ( sum(log(abund)) + sum(lgamma(1 + freq_x)) )
 
-   KDA = calcKDA(Abund);  #confirmed in PARI
+  g <- function(x) {
+	  out <- -1 * esf_local(x, abund, prefactor, kda)
+		return(out)
+  }
 
-   J = sum(Abund);
-   S = length(Abund);
-   x <- c(table(Abund));
-   freq_x <- c();
-   for(i in 1:length(x)) freq_x[i] <- x[[i]];
-   prefactor = lgamma(J+1) -( sum(log(Abund)) + sum(lgamma(1+freq_x)) );
-   
-   g <- function(x) {
-		out <- -1 * ESF_local(x,Abund,prefactor,KDA);
-		return(out);
-      }  
-  
-  optimum <- simplex(initVals,g,verbose);
-  return(optimum);
+  optimum <- simplex(init_vals, g, verbose)
+  return(optimum)
 }
