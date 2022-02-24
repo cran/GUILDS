@@ -1,8 +1,8 @@
-useDynLib(GUILDS)
 importFrom("stats", "integrate", "optimize", "rbeta", "runif", "lm",
              "uniroot")
 importFrom("utils", "flush.console")
 importFrom("graphics", "barplot", "lines")
+importFrom(subplex, subplex)
 importFrom(Rcpp, evalCpp)
 
 export(generate.ESF)
@@ -25,5 +25,6 @@ export(maxLikelihood.Guilds.Conditional)
 
 export(preston_plot)
 export(calcKDA)
-export(simplex)
+
+useDynLib(GUILDS, .registration = TRUE)
 

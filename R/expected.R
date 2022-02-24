@@ -1,10 +1,10 @@
 sort_aux <- function(A) {
-  output <- rep(0,13)
+  output <- rep(0, 13)
 
   for (k in seq_along(output)) {
-    start <- 2^(k - 1)
-    end <- -1 + 2^(k)
-    if(end > length(A)) {
+    start <- 2 ^ (k - 1)
+    end <- -1 + 2 ^ (k)
+    if (end > length(A)) {
       end <- length(A)
       X <- sum(A[start:end])
       output[k] <- X
@@ -67,26 +67,25 @@ expected.SAD.Guilds <- function(theta, alpha_x, alpha_y,
          "J can not be below one")
   }
 
-
   meanx <- rep(0, J)
   meany <- rep(0, J)
 
   for (r in seq_len(n_replicates)) {
-		M <- draw_local(theta, alpha_x, alpha_y, J)
-		for (m in seq_along(M$guildX)) {
-			meanx[m] <- meanx[m] + M$guildX[m]
-		}
-		for (m in seq_along(M$guildY)) {
-			meany[m] <- meany[m] + M$guildY[m]
-		}
+    M <- draw_local(theta, alpha_x, alpha_y, J)
+    for (m in seq_along(M$guildX)) {
+      meanx[m] <- meanx[m] + M$guildX[m]
+    }
+    for (m in seq_along(M$guildY)) {
+      meany[m] <- meany[m] + M$guildY[m]
+    }
   }
   meanx <- meanx / n_replicates
   meany <- meany / n_replicates
 
   gx <- sort_aux(meanx)
   gy <- sort_aux(meany)
-  
-  output <- list( guildX = gx, guildY = gy)
+
+  output <- list(guildX = gx, guildY = gy)
   return(output)
 }
 
@@ -125,24 +124,24 @@ expected.SAD.Guilds.Conditional <- function(theta,
          "Jy can not be below one")
   }
 
-  meanx <- rep(0,Jx)
-  meany <- rep(0,Jy)
+  meanx <- rep(0, Jx)
+  meany <- rep(0, Jy)
 
   for (r in seq_len(n_replicates)) {
-		M <- draw_local_cond(theta, alpha_x, alpha_y, Jx, Jy)
-		for (m in seq_along(M$guildX)) {
-			meanx[m] <- meanx[m] + M$guildX[m]
-		}
-		for (m in seq_along(M$guildY)) {
-			meany[m] <- meany[m] + M$guildY[m]
-		}
+    M <- draw_local_cond(theta, alpha_x, alpha_y, Jx, Jy)
+    for (m in seq_along(M$guildX)) {
+      meanx[m] <- meanx[m] + M$guildX[m]
+    }
+    for (m in seq_along(M$guildY)) {
+      meany[m] <- meany[m] + M$guildY[m]
+    }
   }
   meanx <- meanx / n_replicates
   meany <- meany / n_replicates
 
   gx <- sort_aux(meanx)
   gy <- sort_aux(meany)
-  
-  output <- list( guildX = gx, guildY = gy)
+
+  output <- list(guildX = gx, guildY = gy)
   return(output)
 }
