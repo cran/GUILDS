@@ -56,7 +56,7 @@ esf_local <- function(v, abund, prefactor, kda) {
   return(ll)
 }
 
-maxLikelihood.ESF <- function(init_vals, abund, verbose = TRUE) {
+maxLikelihood.ESF <- function(init_vals, abund, verbose = FALSE) {
   if (init_vals[1] < 1) {
      stop("maxLikelihood.ESF: ",
           "initial theta can not be below one")
@@ -84,9 +84,16 @@ maxLikelihood.ESF <- function(init_vals, abund, verbose = TRUE) {
 
   g <- function(x) {
 	  out <- -1 * esf_local(x, abund, prefactor, kda)
+	  if (verbose) cat(x, out, "\n")
 		return(out)
   }
 
-  optimum <- subplex::subplex(par = init_vals, fn = g)
-  return(optimum)
+  x <- nloptr::nloptr(x0 = init_vals,
+                      eval_f = g,
+                      opts = list("algorithm" = "NLOPT_LN_SBPLX",
+                                  xtol_rel = 1e-4))
+  out <- list()
+  out$par <- x$solution
+  out$value <- x$objective
+  return(out)
 }
