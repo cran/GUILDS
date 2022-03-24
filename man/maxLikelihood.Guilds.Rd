@@ -49,7 +49,7 @@ Thijs Janzen
 
 \examples{
 \dontrun{
-  J <- 1000
+  J <- 10000
 
   theta <- 100
   alpha_x <- 0.1

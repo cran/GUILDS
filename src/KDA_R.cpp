@@ -7,6 +7,9 @@
 #include <math.h>
 #include <vector>
 
+#include "KDA_arm.h"
+
+
 using namespace std;
 using namespace Rcpp;
 //// Base of this code by
@@ -226,8 +229,31 @@ void calcLogKDA(std::vector<long double>& K,
 NumericVector calcKDA(NumericVector A)
 {
 
-  // Rcpp::Rcout << "Hello! This is the calcKDA function!\n";
-    //convert abundances from A to Species
+#ifdef __arm64__
+  // long doubles are not supported on ARM / M1 CPU
+  // so we have to work around this.
+//  Rcpp::Rcout << "ARM!\n";
+  size_t numspecies = A.size();
+  std::vector< size_t > Abund(numspecies);
+
+ for(size_t s = 0; s < numspecies; ++s) {
+    if(s > Abund.size()) break;
+    Abund[s] = A[s];
+  }
+
+  std::vector<double> K = calcLogKDA_arm(numspecies, Abund);
+  int sizeofK = K.size();
+  Rcpp::NumericVector out(sizeofK);
+  for(int i = 0; i < sizeofK; ++i) {
+    out[i] = K[i] + 4500.0 * logl(10);
+  }
+
+  return out;
+
+
+#else
+//  Rcpp::Rcout << "intel!\n";
+  //convert abundances from A to Species
 	int numspecies = A.size();
 	std::vector<int> Abund(numspecies); //Abund = new int[numspecies];
 
@@ -250,4 +276,5 @@ NumericVector calcKDA(NumericVector A)
 	}
 
   return out;
+#endif
 }
