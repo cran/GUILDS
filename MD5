@@ -1,4 +1,4 @@
-3ab9d936cf66323dde33732809c40cdf *DESCRIPTION
+527c1c1c5094e245fc4f4d7836fc277a *DESCRIPTION
 b44d8aef53251a52c036c4f71b0e18c2 *NAMESPACE
 f9db0164f72cc4c28d25a5efa6bbc90f *R/Condition.R
 07344f1dc6579dfc18130af84b71dec7 *R/ESF_function.R
@@ -15,13 +15,13 @@ dd5f5af555a15dac924713d504bbe0c3 *R/loglikelihood_guilds.R
 44e1a19cc92cb92b2123dfb7d0180363 *R/maxlikelihood_guilds.R
 4cdc8164ad2d42d779782d32bd7118fd *R/maxlikelihood_guilds_conditional.R
 66a3c5e317341f349916a8e3b8d8d0f3 *R/visualisation.R
-e0e39af8751f8db27b517257b8a8b27c *README.md
-e2089e893fd15b0a72f239d45c5fc544 *build/vignette.rds
+37cfe1d05f9b9c746ef522ad2286aac8 *README.md
+c7f18ebc2d4544a536a4acf3e292affa *build/vignette.rds
 0c98a91ea6dc5e0a4efa176cdd9934ee *inst/doc/GUILDS.R
 7fe186702ec229ffabcbbccbde0c7db0 *inst/doc/GUILDS.Rmd
-7abc3c651bbab31c5e6b1c754f5a0466 *inst/doc/GUILDS.html
+34ed46182d613d7bbe9aa6392e5a5ecf *inst/doc/GUILDS.html
 414fde144df083db125e25115aa1f38b *man/GUILDS-internal.Rd
-f1e49ea904a84b9f72adcd48c7ca490e *man/GUILDS-package.Rd
+6cee91678df8652510babf7c3acb7bb1 *man/GUILDS-package.Rd
 64adb56f99bcf81dd9ec281acf2cfdad *man/expected.SAD.Guilds.Conditional.Rd
 8d7fe97eedd5f7b39e20ac6af9d54fe4 *man/expected.SAD.Guilds.Rd
 d89525cd77d4fc4364f245f1a036245d *man/expected.SAD.Rd
@@ -39,7 +39,7 @@ d7198763c932bb373e8841ddfac4276b *src/KDA_R.cpp
 5a09988b019ba2db7c42fc4cd791d4b3 *src/KDA_arm.h
 cd2a504da5ac468890d241096fea03b8 *src/RcppExports.cpp
 04c56ce7517acc3b530bf913e23c4a94 *tests/testthat.R
-923d997b9ead93a4f6d236173065fadc *tests/testthat/Rplots.pdf
+298a7cc043847d652b0c6e2a22109a12 *tests/testthat/Rplots.pdf
 ac48fb44b3edc14b829b8b1f7093e21d *tests/testthat/test-calcKDA.R
 6fec0629228995c324902bdeca42baf7 *tests/testthat/test-expected.SAD.Guilds.Conditional.R
 c3ab6cd6343b49a9e5d4f18cc42be817 *tests/testthat/test-expected.SAD.Guilds.R
@@ -49,7 +49,7 @@ c3ab6cd6343b49a9e5d4f18cc42be817 *tests/testthat/test-expected.SAD.Guilds.R
 42cb821843342549cb50139d05117a9f *tests/testthat/test-logLikelihood.Guilds.Conditional.R
 d8acbaa84467bfe95e3fc57770fdb24f *tests/testthat/test-logLikelihood.Guilds.R
 8ea9a72ab6773a2ebae0514100af11ba *tests/testthat/test-maxLikelihood.ESF.R
-d66bc5c4dd9feea541874b2f8bb1f2ad *tests/testthat/test-maxLikelihood.Guilds.Conditional.R
-1eed1998c096092b971b4e8f60253bdc *tests/testthat/test-maxLikelihood.Guilds.R
+f779c8dc1c9ee4c0c675bea762d6dffe *tests/testthat/test-maxLikelihood.Guilds.Conditional.R
+8dde27057ab5b11b19c60b802ac6a345 *tests/testthat/test-maxLikelihood.Guilds.R
 d76c55a0df0acf7abf4437b9b6d887b0 *tests/testthat/test-preston_plot.R
 7fe186702ec229ffabcbbccbde0c7db0 *vignettes/GUILDS.Rmd
