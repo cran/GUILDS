@@ -1,8 +1,6 @@
 context("maxLikelihood.Guilds")
 
 test_that("maxLikelihood.Guilds: use", {
-  skip_on_cran() # takes too long
- # testthat::skip("takes too long")
   set.seed(42)
   J <- 1000
 
@@ -34,11 +32,11 @@ test_that("maxLikelihood.Guilds: use", {
 
   #testthat::expect_output(
   #initial parameters for the D1 model c(theta, alpha_x, alpha_y)
-  LL <- maxLikelihood.Guilds( init_vals = c(theta, alpha_x, alpha_y),
-                              model = "D1",
-                              sadx  = simul_data$guildX,
-                              sady  = simul_data$guildY, verbose = FALSE)
-  #)
+  LL <- maxLikelihood.Guilds(init_vals = c(theta, alpha_x, alpha_y),
+                             model = "D1",
+                             sadx  = simul_data$guildX,
+                             sady  = simul_data$guildY,
+                             verbose = FALSE)
 
   testthat::expect_equal(
     alpha_x,

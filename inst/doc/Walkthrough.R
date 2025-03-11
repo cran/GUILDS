@@ -1,11 +1,11 @@
 ## ----setup, include=FALSE-----------------------------------------------------
 knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_chunk$set(fig.width = 6)
+require(GUILDS)
 
 ## ----start--------------------------------------------------------------------
-library(GUILDS)
 set.seed(42)
-theta = 100
+theta <- 100
 m <- 0.1
 J <- 10000
 I <- m * (J - 1) / (1 - m)
@@ -91,8 +91,8 @@ ML2 <- maxLikelihood.Guilds.Conditional(init_vals = c(theta, alpha_x),
                                        verbose = FALSE)
 
 ## ----AIC----------------------------------------------------------------------
-AIC_D1 = 2 * 3 - 2 * -ML1$value
-AIC_D0 = 2 * 2 - 2 * -ML2$value
+AIC_D1 <- 2 * 3 - 2 * -ML1$value
+AIC_D0 <- 2 * 2 - 2 * -ML2$value
 AIC_D1
 AIC_D0
 
